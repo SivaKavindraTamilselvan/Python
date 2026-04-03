@@ -13,56 +13,60 @@ with sync_playwright() as p:
 
     page = context.new_page()
 
-    response = page.goto("https://www.nykaa.com/skin/moisturizers/face-moisturizer-day-cream/c/8394")
-
-    print(response.status)
-
-    page.wait_for_load_state("networkidle")
-
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-    time.sleep(2)
-
-    products = page.locator("div.css-ifdzs8")
-
-    count = products.count()
-
-    print("Total Products : " , count)
-
     with open("moisturizer.csv","w",newline="",encoding="utf-8") as f:
 
-        writer = csv.writer(f)
+        for page_no in range(1,88):
 
-        for i in range(count):
-            product = products.nth(i)
+            print("Scrapping Page ", page_no)
 
-            try:
-                data = product.inner_text()
-                data = data.split("\n")
-                print(data)
+            url = f"https://www.nykaa.com/skin/moisturizers/face-moisturizer-day-cream/c/8394?page_no={page_no}&sort=popularity"
 
-                features = []
-                name = ""
-                original_cost = ""
-                discounted_cost = ""
-                quantity = ""
+            response = page.goto(url, timeout=60000)
 
-                for line in data:
-                    line = line.strip()
-                    if line in ["FEATURED", "BESTSELLER", "NEW", "AD"]:
-                        features.append(line)
-                    elif "₹" in line and original_cost == "":
-                        original_cost = re.findall(r"\d", line)
-                        original_cost="".join(original_cost)
-                    elif "Size" in line or "Sizes" in line:
-                        quantity = line
-                    else:
-                        if name == "":
-                            name = line
+            print(response.status)
+
+            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(3)
+
+            products = page.locator("div.css-ifdzs8")
+
+            count = products.count()
+
+            print("Total Products : ", count)
+
+            writer = csv.writer(f)
+
+            for i in range(count):
+                product = products.nth(i)
+
+                try:
+                    data = product.inner_text()
+                    data = data.split("\n")
+                    print(data)
+
+                    features = []
+                    name = ""
+                    original_cost = ""
+                    discounted_cost = ""
+                    quantity = ""
+
+                    for line in data:
+                        line = line.strip()
+                        if line in ["FEATURED", "BESTSELLER", "NEW", "AD"]:
+                            features.append(line)
+                        elif "₹" in line and original_cost == "":
+                            original_cost = re.findall(r"\d", line)
+                            original_cost="".join(original_cost)
+                        elif "Size" in line or "Sizes" in line:
+                            quantity = line
                         else:
-                            name += " " + line
+                            if name == "":
+                                name = line
+                            else:
+                                name += " " + line
 
-                writer.writerow([name, ", ".join(features), original_cost, quantity])
-            except:
-                pass
+                    writer.writerow([name, ", ".join(features), original_cost, quantity])
+                except:
+                    pass
 
     browser.close()
