@@ -1,11 +1,16 @@
-import requests
-from streamlit import header
-from werkzeug.user_agent import UserAgent
+from playwright.sync_api import sync_playwright
 
-url = "https://www.nykaa.com/skin/moisturizers/face-moisturizer-day-cream/c/8394"
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
 
-headers = {"User-Agent" : "Mozilla/5.0"}
+    context = browser.new_context(
+        user_agent="Mozilla/5.0 (Windows NT 10.0;Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+    )
 
-response = requests.get(url, headers=headers)
+    page = context.new_page()
 
-print (response.status_code)
+    response = page.goto("https://www.nykaa.com/skin/moisturizers/face-moisturizer-day-cream/c/8394")
+
+    print(response.status)
+
+    browser.close()
