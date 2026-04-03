@@ -1,6 +1,8 @@
 from playwright.sync_api import sync_playwright
 import time
 import csv
+import re
+
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
@@ -37,7 +39,29 @@ with sync_playwright() as p:
                 data = product.inner_text()
                 data = data.split("\n")
                 print(data)
-                writer.writerow(data)
+
+                features = []
+                name = ""
+                original_cost = ""
+                discounted_cost = ""
+                quantity = ""
+
+                for line in data:
+                    line = line.strip()
+                    if line in ["FEATURED", "BESTSELLER", "NEW", "AD"]:
+                        features.append(line)
+                    elif "₹" in line and original_cost == "":
+                        original_cost = re.findall(r"\d", line)
+                        original_cost="".join(original_cost)
+                    elif "Size" in line or "Sizes" in line:
+                        quantity = line
+                    else:
+                        if name == "":
+                            name = line
+                        else:
+                            name += " " + line
+
+                writer.writerow([name, ", ".join(features), original_cost, quantity])
             except:
                 pass
 
