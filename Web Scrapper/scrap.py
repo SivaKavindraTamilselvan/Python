@@ -25,4 +25,13 @@ with sync_playwright() as p:
 
     print("Total Products : " , count)
 
+    for i in range(count):
+        product = products.nth(i)
+
+        try:
+            data = product.inner_text()
+            print(data)
+        except:
+            pass
+
     browser.close()
