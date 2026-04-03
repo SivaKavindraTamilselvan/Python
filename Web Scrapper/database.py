@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import date
+import re
 
 
 def create_table():
@@ -10,6 +11,7 @@ def create_table():
         name TEXT NOT NULL,
         price INTEGER NOT NULL,
         date TEXT NOT NULL,
+        sku TEXT NOT NULL,
         features TEXT,
         quantity INTEGER
         )
@@ -19,9 +21,10 @@ def create_table():
     conn.close()
 
 def insert_product (name,price,features,quantity):
+    sku = re.sub(r'\W+', '', name).lower()[:30]
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
 
-    c.execute("""INSERT INTO products VALUES (?,?,?,?,?)""",(name,price,str(date.today()),features,quantity))
+    c.execute("""INSERT INTO products VALUES (?,?,?,?,?)""",(name,price,str(date.today()),sku,features,quantity))
     conn.commit()
     conn.close()
