@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 import time
+import csv
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
@@ -25,13 +26,19 @@ with sync_playwright() as p:
 
     print("Total Products : " , count)
 
-    for i in range(count):
-        product = products.nth(i)
+    with open("moisturizer.csv","w",newline="",encoding="utf-8") as f:
 
-        try:
-            data = product.inner_text()
-            print(data)
-        except:
-            pass
+        writer = csv.writer(f)
+
+        for i in range(count):
+            product = products.nth(i)
+
+            try:
+                data = product.inner_text()
+                data = data.split("\n")
+                print(data)
+                writer.writerow(data)
+            except:
+                pass
 
     browser.close()
