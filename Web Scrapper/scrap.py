@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+import time
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
@@ -14,6 +15,9 @@ with sync_playwright() as p:
     print(response.status)
 
     page.wait_for_load_state("networkidle")
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    time.sleep(2)
 
     products = page.locator("div.css-ifdzs8")
 
