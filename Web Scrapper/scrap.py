@@ -2,6 +2,7 @@ from playwright.async_api import async_playwright
 import asyncio
 import csv
 import re
+from database import create_table , insert_product
 
 async def scrape(url, filename):
 
@@ -59,7 +60,7 @@ async def scrape(url, filename):
                             if line in ["FEATURED", "BESTSELLER", "NEW", "AD"]:
                                 features.append(line)
                             elif "₹" in line and original_cost == "":
-                                original_cost = "".join(re.findall(r"\d+", line))
+                                original_cost = int("".join(re.findall(r"\d+", line)))
                             elif "Size" in line or "Sizes" in line:
                                 quantity = line
                             else:
@@ -67,8 +68,8 @@ async def scrape(url, filename):
                                     name = line
                                 else:
                                     name += " " + line
-
                         writer.writerow([name, ", ".join(features), original_cost, quantity])
+                        insert_product(name, original_cost, features, quantity)
 
                     except Exception as e:
                         print("Error:", e)
@@ -80,6 +81,8 @@ async def scrape(url, filename):
 
 
 async def main():
+
+    create_table()
 
     page_urls = [
         ("https://www.nykaa.com/skin/serums/serums-essence/c/8397", "serums.csv"),
