@@ -13,4 +13,12 @@ with sync_playwright() as p:
 
     print(response.status)
 
+    page.wait_for_load_state("networkidle")
+
+    products = page.locator("div.css-ifdzs8")
+
+    count = products.count()
+
+    print("Total Products : " , count)
+
     browser.close()
