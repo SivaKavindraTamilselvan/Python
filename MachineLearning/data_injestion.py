@@ -24,3 +24,8 @@ if __name__ == "__main__":
 
     df = load_raw_data(csv_path="./Mall_Customers.csv")
     df.to_csv(OUT_PATH, index=False)
+
+    print(f"  Shape            : {df.shape}")
+    print(f"  Columns          : {list(df.columns)}")
+    print(f"  Missing values   :\n{df.isnull().sum().to_string()}")
+    print(f"  Saved to         : {OUT_PATH}")
