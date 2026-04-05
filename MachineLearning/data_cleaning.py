@@ -27,10 +27,12 @@ def remove_outliers_iqr(df, cols, factor=3.0):
     return cleaned
 
 def impute_missing(df):
-    before = df[NUMERIC_COLS + CATEGORICAL_COLS].isnull().sum().sum()
+    before = df[NUMERIC_COLS + CATEGORICAL_COLS].isnull().sum().sum() #first sum count per column and second for all columns
 
     num_imp = SimpleImputer(strategy="median")
     df[NUMERIC_COLS] = num_imp.fit_transform(df[NUMERIC_COLS])
+
+    #fit_transform initially learns and then apply to them
 
     cat_imp = SimpleImputer(strategy="most_frequent")
     df[CATEGORICAL_COLS] = cat_imp.fit_transform(df[CATEGORICAL_COLS])
@@ -39,9 +41,9 @@ def impute_missing(df):
     print(f"  Imputation  : {before} nulls → {after} nulls")
     return df
 
-
 def create_target(df, threshold=50):
     df = df.copy()
+    #usage of thershold mentioned in README file
     df[TARGET] = (df["Spending_Score"] >= threshold).astype(int)
     print(f"  Target created  : {df[TARGET].mean():.1%} high spenders")
     return df
