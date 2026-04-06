@@ -82,3 +82,4 @@ class Model:
             sql = f"DELETE FROM {name} WHERE {attributes[0]}=?"
         cls.execute(sql,(attributes[1],))
         print(f"Values deleted successfully in {name} where {attributes[1]}")
+
