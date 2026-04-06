@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chat</title>
+<link rel="stylesheet" href="./index.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span><strong>Chats</strong></span>
+      <button onclick="addUser()">+</button>
+    </div>
+    <div id="users"></div>
+  </div>
+
+  <div class="chat">
+    <div class="header" id="chatHeader">
+      Select a user to start chatting
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-area">
+      <input type="text" id="message" placeholder="Type a message…">
+      <button onclick="send()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="./script.js"></script>
+</body>
+</html>
