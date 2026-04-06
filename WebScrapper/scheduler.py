@@ -22,8 +22,8 @@ def job():
 if __name__ == "__main__":
     logging.info("Scheduler started — running daily at midnight")
 
-    schedule.every().day.at("00:00").do(job)
+    #schedule.every().day.at("00:00").do(job)
 
     while True:
-        schedule.run_pending()
+        job()
         time.sleep(1)

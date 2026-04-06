@@ -22,8 +22,5 @@ Build a scraper that extracts structured data from dynamic, JavaScript-rendered 
 - [ ]  Compare against previous day's data and flag price changes
 - [ ]  Export a daily price-change report as CSV
 
-## NOTES
-
-
 ## SCREENSHOTS
 
