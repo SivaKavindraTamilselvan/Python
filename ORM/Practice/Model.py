@@ -1,5 +1,7 @@
 import sqlite3
-from multiprocessing import connection
+from sqlite3 import OperationalError
+
+from ORM.Practice.fields import Field
 
 
 class Model:
@@ -17,7 +19,22 @@ class Model:
         return cursor.fetchall()
 
     @classmethod
-    def check(cls):
-        result = cls.execute("SELECT name from sqlite_master where type='table';")
-        print(result)
+    def get_fields(cls):
+        return{
+            key:value
+            for key,value in cls.__dict__.items()
+            if isinstance(value,Field)
+        }
 
+    @classmethod
+    def create_table(cls):
+        name = cls.__name__.lower()
+
+        try:
+            columns = cls.get_fields()
+            col_definition = ", ".join(f"{col_names} {col_type.sql_type()}" for col_names,col_type in columns.items())
+            creation_sql = f"CREATE TABLE {name} {col_definition}"
+            cls.execute(creation_sql)
+            print("Table created successfully")
+        except sqlite3.OperationalError:
+            print("Table aldeady exists")

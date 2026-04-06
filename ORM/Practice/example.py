@@ -6,4 +6,4 @@ class User(Model):
     name = CharField()
     age = IntegerField()
 
-User.check()
+User.create_table()
