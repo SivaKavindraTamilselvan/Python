@@ -36,3 +36,15 @@ class Model:
             print("Table created successfully")
         except sqlite3.OperationalError:
             print("Table already exists")
+
+    @classmethod
+    def delete_table(cls):
+        name = cls.__name__.lower()
+        sql = f"Select name from sqlite_master where type='table' and name='{name}'"
+        check_table = cls.execute(sql)
+        if check_table:
+            drop_sql = f"DROP TABLE {name}"
+            cls.execute(drop_sql)
+            print(f"Table {name} deleted successfully")
+        else:
+            print(f"Table {name} not found")

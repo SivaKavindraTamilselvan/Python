@@ -6,4 +6,5 @@ class User(Model):
     name = CharField()
     age = IntegerField()
 
-User.create_table()
+
+User.delete_table()
