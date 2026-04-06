@@ -362,12 +362,10 @@ class ModelMeta(type):
             if hasattr(base, "_meta"):
                 fields.update(base._meta.get("fields", {}))
 
-        # Collect Field instances declared in this class body
         for attr, val in namespace.items():
             if isinstance(val, Field):
                 fields[attr] = val
 
-        # Auto-add an integer primary key 'id' if not provided
         if "id" not in fields and name != "Model":
             id_field = IntegerField(primary_key=True, nullable=True)
             id_field.name = "id"
