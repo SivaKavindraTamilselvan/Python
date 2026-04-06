@@ -1,15 +1,32 @@
 import sqlite3
 from ORM.Practice.fields import Field
 
+def log_query(method):
+    def wrapper(cls, sql, params=()):
+        print(f"[SQL] {sql}  | params={params}")
+        return method(cls, sql, params)
+    wrapper.__name__ = method.__name__
+    return wrapper
+
 
 class Model:
 
     connection = sqlite3.connect("test.db")
+
+    def __init_subclass__(cls, auto_create=False, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if auto_create:
+            try:
+                cls.create_table()
+            except Exception as e:
+                print(f"[auto_create] Could not create table: {e}")
+
     def __init__(self,**kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     @classmethod
+    @log_query
     def execute(cls, sql,params=()):
         cursor = cls.connection.cursor()
         cursor.execute(sql,params)
