@@ -103,9 +103,9 @@ class Model:
     @classmethod
     def get_primary_key(cls):
         for name, field in cls.get_fields().items():
-            if "PRIMARY KEY" in cls.get_fields().items():
+            if "PRIMARY KEY" in field.get_sql_constraints():
                 return name,field
-        return None
+        return None,None
 
     @classmethod
     def filter(cls, condition, attribute, value):
