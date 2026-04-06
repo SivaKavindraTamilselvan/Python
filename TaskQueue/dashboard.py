@@ -49,7 +49,6 @@ def add_order():
 
     return redirect("/")
 
-
 @app.route("/")
 def dashboard():
     tasks = broker.get_all_tasks()
@@ -63,25 +62,16 @@ def dashboard():
 
     rows = ""
     for t in tasks:
-        duration = calc_duration(
-            t.get("started_at"),
-            t.get("completed_at")
-        )
+        duration = calc_duration(t.get("started_at"), t.get("completed_at"))
         rows += f"""
         <tr>
             <td>{t.get('name','')}</td>
             <td>{badge(t.get('status',''))}</td>
-            <td style='text-align:center'>
-                {t.get('retry_count',0)} / {t.get('max_retries',3)}
-            </td>
+            <td style="text-align:center">{t.get('retry_count',0)} / {t.get('max_retries',3)}</td>
             <td>{duration}</td>
-            <td style='color:#2ecc8a'>{t.get('result','') or '—'}</td>
-            <td style='color:#ff4f6a;font-size:12px'>
-                {t.get('error','') or '—'}
-            </td>
-            <td style='color:#555;font-size:11px'>
-                {t.get('id','')[:8]}...
-            </td>
+            <td style="color:green">{t.get('result','') or '—'}</td>
+            <td style="color:red;font-size:12px">{t.get('error','') or '—'}</td>
+            <td style="color:gray;font-size:12px">{t.get('id','')[:8]}...</td>
         </tr>
         """
 
@@ -90,11 +80,9 @@ def dashboard():
         dlq_rows += f"""
         <tr>
             <td>{t.get('name','')}</td>
-            <td style='color:#ff4f6a'>{t.get('error','') or '—'}</td>
-            <td style='text-align:center'>{t.get('retry_count',0)}</td>
-            <td style='color:#555;font-size:11px'>
-                {t.get('id','')[:8]}...
-            </td>
+            <td style="color:red">{t.get('error','') or '—'}</td>
+            <td style="text-align:center">{t.get('retry_count',0)}</td>
+            <td style="color:gray;font-size:12px">{t.get('id','')[:8]}...</td>
         </tr>
         """
 
@@ -104,176 +92,161 @@ def dashboard():
     <title>Kitchen Dashboard</title>
     <meta http-equiv='refresh' content='20'>
     <style>
-        * {{ box-sizing:border-box; margin:0; padding:0; }}
         body {{
-            font-family: monospace;
-            background: #0d0f14;
-            color: #e2e6f0;
-            padding: 32px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+            color: #333;
         }}
-        h1 {{ font-size:22px; margin-bottom:4px; }}
-        .note {{ font-size:12px; color:#555; margin-bottom:24px; }}
 
-        .form-card {{
-            background: #13161e;
-            border: 1px solid #1e2330;
-            border-radius: 10px;
-            padding: 20px 24px;
-            margin-bottom: 28px;
-            display: flex;
-            gap: 16px;
-            align-items: flex-end;
-            flex-wrap: wrap;
+        h1 {{
+            font-size: 22px;
+            margin-bottom: 4px;
         }}
-        .form-group {{
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+
+        .note {{
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 16px;
         }}
-        .form-group label {{
-            font-size: 11px;
+
+        .form-area {{
+            background: white;
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 20px;
+        }}
+
+        label {{
+            font-size: 13px;
             color: #555;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }}
-        .form-group select,
-        .form-group input {{
-            background: #0d0f14;
-            border: 1px solid #2a3045;
-            border-radius: 6px;
-            color: #e2e6f0;
-            padding: 8px 12px;
-            font-family: monospace;
+
+        select, input {{
+            border: 1px solid #ccc;
+            padding: 5px;
             font-size: 13px;
-            outline: none;
         }}
-        .form-group select:focus,
-        .form-group input:focus {{
-            border-color: #4f9eff;
-        }}
+
         .btn {{
-            background: #4f9eff;
-            color: #002b4a;
+            background: #0077cc;
+            color: white;
             border: none;
-            border-radius: 6px;
-            padding: 9px 20px;
-            font-family: monospace;
-            font-size: 13px;
-            font-weight: 700;
+            padding: 8px 16px;
             cursor: pointer;
-            margin-bottom: 1px;
+            font-size: 13px;
         }}
-        .btn:hover {{ background: #2ecc8a; color: #0a3d22; }}
+
+        .btn:hover {{
+            background: #005fa3;
+        }}
 
         .stats {{
-            display: flex;
-            gap: 12px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
+            margin-bottom: 20px;
         }}
+
         .stat {{
-            background: #13161e;
-            border: 1px solid #1e2330;
-            border-radius: 10px;
-            padding: 14px 22px;
-            min-width: 100px;
+            display: inline-block;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 18px;
+            margin-right: 8px;
+            text-align: center;
         }}
-        .stat-val {{ font-size: 26px; font-weight: 700; }}
-        .stat-lbl {{ font-size: 11px; color: #555; margin-top: 4px; }}
+
+        .stat-val {{
+            font-size: 22px;
+            font-weight: bold;
+            color: #0077cc;
+        }}
+
+        .stat-lbl {{
+            font-size: 12px;
+            color: #777;
+        }}
 
         h2 {{
-            font-size: 11px;
+            font-size: 14px;
             color: #555;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 24px 0 10px;
+            margin: 20px 0 8px;
         }}
 
         table {{
             width: 100%;
             border-collapse: collapse;
-            background: #13161e;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 8px;
+            background: white;
+            margin-bottom: 10px;
         }}
+
         th {{
-            background: #1e2330;
-            padding: 10px 14px;
+            background: #e8e8e8;
+            padding: 8px;
             text-align: left;
-            font-size: 11px;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 13px;
+            border: 1px solid #ccc;
         }}
+
         td {{
-            padding: 12px 14px;
-            border-top: 1px solid #1e2330;
+            padding: 8px;
+            border: 1px solid #ddd;
             font-size: 13px;
         }}
-        tr:hover td {{ background: #1a1d26; }}
+
+        tr:hover td {{
+            background: #f9f9f9;
+        }}
+
         .empty {{
             text-align: center;
-            color: #555;
-            padding: 24px;
+            color: #999;
+            padding: 20px;
         }}
     </style>
 </head>
 <body>
 
 <h1>Restaurant Kitchen</h1>
-<p class='note'>Auto-refreshes every 3 seconds</p>
+<p class='note'>Auto-refreshes every 20 seconds</p>
 
-<!-- ── Order Form ── -->
-<form class='form-card' action='/order' method='POST'>
-
-    <div class='form-group'>
-        <label>Menu Item</label>
-        <select name='item'>
-            <option value='cook_burger'>Burger</option>
-            <option value='cook_pasta'>Pasta</option>
-            <option value='make_dessert'>Dessert</option>
-        </select>
-    </div>
-
-    <div class='form-group'>
-        <label>Order ID</label>
-        <input type='number' name='order_id' value='101' style='width:90px'>
-    </div>
-
-    <div class='form-group'>
-        <label>Quantity</label>
-        <input type='number' name='quantity' value='1' min='1' style='width:70px'>
-    </div>
-
-    <div class='form-group'>
-        <label>Max Retries</label>
-        <input type='number' name='max_retries' value='3' min='1' style='width:80px'>
-    </div>
-
+<form class='form-area' action='/order' method='POST'>
+    <label>Menu Item:</label>
+    <select name='item'>
+        <option value='cook_burger'>Burger</option>
+        <option value='cook_pasta'>Pasta</option>
+        <option value='make_dessert'>Dessert</option>
+    </select>
+    &nbsp;
+    <label>Order ID:</label>
+    <input type='number' name='order_id' value='101' style='width:80px'>
+    &nbsp;
+    <label>Quantity:</label>
+    <input type='number' name='quantity' value='1' min='1' style='width:60px'>
+    &nbsp;
+    <label>Max Retries:</label>
+    <input type='number' name='max_retries' value='3' min='1' style='width:70px'>
+    &nbsp;
     <button class='btn' type='submit'>Place Order</button>
-
 </form>
 
 <div class='stats'>
     <div class='stat'>
-        <div class='stat-val' style='color:#4f9eff'>{total}</div>
+        <div class='stat-val'>{total}</div>
         <div class='stat-lbl'>Total</div>
     </div>
     <div class='stat'>
-        <div class='stat-val' style='color:#2ecc8a'>{success}</div>
+        <div class='stat-val' style='color:green'>{success}</div>
         <div class='stat-lbl'>Success</div>
     </div>
     <div class='stat'>
-        <div class='stat-val' style='color:#4f9eff'>{running}</div>
+        <div class='stat-val'>{running}</div>
         <div class='stat-lbl'>Running</div>
     </div>
     <div class='stat'>
-        <div class='stat-val' style='color:#f5a623'>{retrying}</div>
+        <div class='stat-val' style='color:orange'>{retrying}</div>
         <div class='stat-lbl'>Retrying</div>
     </div>
     <div class='stat'>
-        <div class='stat-val' style='color:#ff4f6a'>{dead}</div>
+        <div class='stat-val' style='color:red'>{dead}</div>
         <div class='stat-lbl'>Dead</div>
     </div>
 </div>
@@ -282,17 +255,12 @@ def dashboard():
 <table>
     <thead>
         <tr>
-            <th>Task</th>
-            <th>Status</th>
-            <th>Retries</th>
-            <th>Duration</th>
-            <th>Result</th>
-            <th>Error</th>
-            <th>ID</th>
+            <th>Task</th><th>Status</th><th>Retries</th>
+            <th>Duration</th><th>Result</th><th>Error</th><th>ID</th>
         </tr>
     </thead>
     <tbody>
-        {rows or "<tr><td colspan='7' class='empty'>No orders yet. Place one above!</td></tr>"}
+        {rows or "<tr><td colspan='7' class='empty'>No orders yet.</td></tr>"}
     </tbody>
 </table>
 
@@ -300,10 +268,7 @@ def dashboard():
 <table>
     <thead>
         <tr>
-            <th>Task</th>
-            <th>Final Error</th>
-            <th>Attempts</th>
-            <th>ID</th>
+            <th>Task</th><th>Final Error</th><th>Attempts</th><th>ID</th>
         </tr>
     </thead>
     <tbody>
@@ -313,7 +278,6 @@ def dashboard():
 
 </body>
 </html>"""
-
 
 if __name__ == "__main__":
     print("Dashboard → http://localhost:5000")
