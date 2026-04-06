@@ -5,8 +5,8 @@ from ORM.Practice.fields import Field
 class Model:
 
     connection = sqlite3.connect("test.db")
-    def __init__(self):
-        for key, value in self.__dict__.items():
+    def __init__(self,**kwargs):
+        for key, value in kwargs.items():
             setattr(self, key, value)
 
     @classmethod
@@ -48,3 +48,37 @@ class Model:
             print(f"Table {name} deleted successfully")
         else:
             print(f"Table {name} not found")
+
+    def save(self):
+        name = self.__class__.__name__.lower()
+        fields = self.__class__.get_fields()
+
+        attributes = ", ".join(fields.keys())
+        placeholder = ", ".join("?" for _ in fields)
+        values = [getattr(self,name) for name in fields]
+
+        sql = f"INSERT INTO {name} ({attributes}) VALUES ({placeholder})"
+
+        self.__class__.execute(sql,values)
+
+        print(f"Values inserted successfully in {name}")
+
+    @classmethod
+    def get(cls,attributes=None):
+        name = cls.__name__.lower()
+        if attributes is None:
+            sql = f"SELECT * FROM {name}"
+        else :
+            sql = f"SELECT {attributes} FROM {name}"
+        result = cls.execute(sql)
+        print(result)
+
+    @classmethod
+    def delete(cls,attributes=None):
+        name = cls.__name__.lower()
+        if attributes is None:
+            sql = f"DELETE FROM {name}"
+        else:
+            sql = f"DELETE FROM {name} WHERE {attributes[0]}=?"
+        cls.execute(sql,(attributes[1],))
+        print(f"Values deleted successfully in {name} where {attributes[1]}")
