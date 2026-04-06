@@ -91,8 +91,59 @@ class Model:
         return None
 
     @classmethod
-    def filter(cls,condition,attribute,value):
-        name = cls.__name__.lower()
-        sql = f"SELECT * FROM {name} WHERE {attribute}{condition}=?"
-        result = cls.execute(sql,(value,))
+    def filter(cls, condition, attribute, value):
+        return QuerySet(cls).filter(condition, attribute, value)
+
+    @classmethod
+    def order_by(cls, attribute, order="ASC"):
+        return QuerySet(cls).order_by(attribute, order)
+
+    @classmethod
+    def group_by(cls, attribute):
+        return QuerySet(cls).group_by(attribute)
+
+
+class QuerySet:
+    def __init__(self, model):
+        self.model = model
+        self.filters = []
+        self.order = None
+        self.group = None
+        self.params = []
+
+    def filter(self, condition, attribute, value):
+        self.filters.append(f"{attribute} {condition} ?")
+        self.params.append(value)
+        return self
+
+    def order_by(self, attribute, order="ASC"):
+        self.order = f"{attribute} {order}"
+        return self
+
+    def group_by(self, attribute):
+        self.group = attribute
+        return self
+
+    def _build_sql(self):
+        name = self.model.__name__.lower()
+        sql = f"SELECT * FROM {name}"
+
+        if self.filters:
+            sql += " WHERE " + " AND ".join(self.filters)
+
+        if self.group:
+            sql += f" GROUP BY {self.group}"
+
+        if self.order:
+            sql += f" ORDER BY {self.order}"
+
+        return sql + ";"
+
+    def fetch(self):
+        sql = self._build_sql()
+        result = self.model.execute(sql, self.params)
         print(result)
+        return result
+
+    def __repr__(self):
+        return str(self.fetch())
