@@ -1,23 +1,23 @@
-#these are state variable
-#initially needed to know whose portal is that
+//these are state variable
+//initially needed to know whose portal is that
 let username = prompt("Enter your name")
 
-#user name not mentioned then it will be taken as guest
+//user name not mentioned then it will be taken as guest
 if (!username) username = "Guest"
 
-#currentUser is the person i am selecting to chat them
+//currentUser is the person i am selecting to chat them
 let currentUser = null
 
-#it is a reference to the timeout used -  typing
+//it is a reference to the timeout used -  typing
 let typingTimer = null
 
-#used status indicator such as offline or online
+//used status indicator such as offline or online
 let presenceMap = {}
 
-#create the websocket connection
+//create the websocket connection
 let ws = new WebSocket("ws://localhost:8000/ws")
 
-#sends the hello handshake protocol to know the username,status presence
+//sends the hello handshake protocol to know the username,status presence
 ws.onopen = function () {
     ws.send(JSON.stringify({ type: "hello", username: username }))
 }
