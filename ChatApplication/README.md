@@ -22,3 +22,6 @@ Build a scraper that extracts structured data from dynamic, JavaScript-rendered 
 - [x]  Export a daily price-change report as CSV
 
 ## SCREENSHOTS
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9eefab33-55a4-4d50-ad59-8599675a6f6f" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/be72bb29-f0f2-4713-87a5-0754c9ec5234" />
