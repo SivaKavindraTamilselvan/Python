@@ -1,6 +1,4 @@
 import sqlite3
-from sqlite3 import OperationalError
-
 from ORM.Practice.fields import Field
 
 
@@ -33,8 +31,8 @@ class Model:
         try:
             columns = cls.get_fields()
             col_definition = ", ".join(f"{col_names} {col_type.sql_type()}" for col_names,col_type in columns.items())
-            creation_sql = f"CREATE TABLE {name} {col_definition}"
+            creation_sql = f"CREATE TABLE {name} ({col_definition})"
             cls.execute(creation_sql)
             print("Table created successfully")
         except sqlite3.OperationalError:
-            print("Table aldeady exists")
+            print("Table already exists")
