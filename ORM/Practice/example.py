@@ -1,5 +1,7 @@
 from ORM.Practice.Model import Model
 from ORM.Practice.fields import Field,IntegerField,CharField
+from ORM.orm import ForeignKey
+
 
 class User(Model):
     id=IntegerField(PRIMARY_KEY=True)
@@ -7,5 +9,11 @@ class User(Model):
     age = IntegerField()
 
 User.create_table()
-b = User(id=2,name="B",age=30).save()
 User.get()
+
+class Book(Model):
+    id = IntegerField(PRIMARY_KEY=True)
+    author_name = ForeignKey(User)
+    book_name=CharField()
+
+User.filter("<","age",26)

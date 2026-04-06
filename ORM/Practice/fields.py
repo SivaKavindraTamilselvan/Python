@@ -25,3 +25,15 @@ class CharField(Field):
 
     def sql_type(self):
         return f"TEXT {self.get_sql_constraints()}".strip()
+
+class ForeignKeyField(Field):
+    def __init__(self, reference_model, **kwargs):
+        self.reference_model = reference_model
+
+    def sql_type(self):
+        primary_key,primary_field = self.reference_model.get_primary_key()
+
+        base_type = primary_field.split(" ")[0]
+        ref_table = self.reference_model.__name__.lower()
+
+        return f"{base_type} REFERENCES {ref_table}({primary_key})".strip()

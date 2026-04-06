@@ -83,3 +83,16 @@ class Model:
         cls.execute(sql,(attributes[1],))
         print(f"Values deleted successfully in {name} where {attributes[1]}")
 
+    @classmethod
+    def get_primary_key(cls):
+        for name, field in cls.get_fields().items():
+            if "PRIMARY KEY" in cls.get_fields().items():
+                return name,field
+        return None
+
+    @classmethod
+    def filter(cls,condition,attribute,value):
+        name = cls.__name__.lower()
+        sql = f"SELECT * FROM {name} WHERE {attribute}{condition}=?"
+        result = cls.execute(sql,(value,))
+        print(result)
