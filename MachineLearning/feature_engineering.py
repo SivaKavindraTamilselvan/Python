@@ -19,6 +19,7 @@ def add_derived_numerics(df):
     return df
 
 
+# Binning
 def add_bins(df):
     df = df.copy()
     df["age_group"] = pd.cut(
@@ -36,6 +37,7 @@ def add_bins(df):
     return df
 
 
+# make binary flags like 0 and 1
 def add_binary_flags(df):
     df = df.copy()
     df["is_young_adult"]  = (df["Age"] <= 30).astype(int)
@@ -43,6 +45,7 @@ def add_binary_flags(df):
     return df
 
 
+# One - Hot Encoding
 def encode_genre(df):
     df    = df.copy()
     dummies = pd.get_dummies(df["Genre"], prefix="Genre").astype(int)
@@ -76,12 +79,8 @@ if __name__ == "__main__":
         "is_young_adult", "is_high_earner",
         "Genre_Male", "Genre_Female"
     ]
-    for col in new_cols:
-        if col in featured.columns:
-            if featured[col].dtype == object:
-                print(f"    {col:<25} {featured[col].value_counts().to_dict()}")
-            else:
-                print(f"    {col:<25} mean={featured[col].mean():.3f}  std={featured[col].std():.3f}")
+
+    print(new_cols)
 
     featured.to_csv(OUT_PATH, index=False)
     print(f"\n  Saved to       : {OUT_PATH}")
