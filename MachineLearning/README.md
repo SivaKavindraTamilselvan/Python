@@ -326,5 +326,10 @@ Threshold is checked here because:
 4. If imbalanced → change threshold before training
 
 ## Screenshots
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6ba87153-6aa9-454a-a8be-6a97071798a0" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/46750eee-7e00-4a09-b262-1ccdd0a4b823" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/27f2cc7e-3d32-43cb-9199-9fc218038322" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/505a3e4a-6a01-47ad-80d0-91d70e33e026" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ff0b82ee-37e1-479a-928a-136ad32961aa" />
 
 
